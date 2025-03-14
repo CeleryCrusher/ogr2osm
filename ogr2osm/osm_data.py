@@ -339,6 +339,9 @@ class OsmData:
             osmgeometries.extend(self.__parse_multi_linestring(ogrgeometry, tags))
         elif geometry_type in [ ogr.wkbPolygon, ogr.wkbPolygon25D ]:
             osmgeometries.append(self.__parse_polygon(ogrgeometry, tags))
+        elif geometry_type == ogr.wkbCurvePolygon:  # New code for CURVEPOLYGON
+            linearized = ogrgeometry.GetLinearGeometry() # Convert to a regular polygon
+            osmgeometries.append(self.__parse_polygon(linearized, tags))
         elif geometry_type in [ ogr.wkbMultiPolygon, ogr.wkbMultiPolygon25D ]:
             # OGR MultiPolygon maps easily to osm multipolygon, so special case it
             # TODO: Does anything else need special casing?
